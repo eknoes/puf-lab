@@ -6,6 +6,5 @@
 
 Afterwards, modify the Makefile to point to those directories.
 
-    RBPI-TOOLS=/home/soenke/Projekte/rbpi-tools
-    RBPI-KERNEL=/home/soenke/Projekte/rbpi-linux
-
+    RBPI-TOOLS=${HOME}/Projekte/rbpi-tools
+    RBPI-KERNEL=${HOME}/Projekte/rbpi-linux
