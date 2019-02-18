@@ -1,0 +1,47 @@
+--------------------------------------------------------------------------------------
+
+Program Name: DRAM testing application for "RaspberryPi 3"
+
+--------------------------------------------------------------------------------------
+Overview: This program is built to perform DRAM read/write test to verify the H/W design 
+          correctness. By using 2 different petterns, this program can valida every bit of
+          of DRAM in specific memory range.
+--------------------------------------------------------------------------------------
+Flow Chart:
+
+    [Set up memory mapping of DRAM testing base address] ->
+
+    [Write pattern to DRAM in the pre-defined range] ->
+
+    [Read data from the same range] ->
+
+    [Compare the data and pattern. Increment "error counter" if not identical] ->
+
+    [If error cournter is "0", DRAM test is successfully done]
+                              
+--------------------------------------------------------------------------------------
+Key files/modules:
+
+(1). RPI3.h: To define RAM testing starting(base) address. In this program, upper 256MB out of total 
+             1GB RAM are used. Refer to page.5 of "BCM2835-ARM-Peripherals_RaspberryPi.pdf" for details.
+
+(2). 2837mmu.h: 
+     a. To define mmap structure for accommodating variables of file description(fd), physical address, 
+        virtual address.
+     b. provide reference for functions "setup_io" and "release_io" which are used to get/release memory mapping. 
+
+(3). 2837mmu.c: To define the funtionality of setup_io and release_io functions.
+     a. setup_io: To map physical address to virtual address for peripherals.
+     b. release_io: Release the I/O mapping.
+
+(4). DRAM_test.c: Main function to setup I/O mapping and execute the DRAM testing with 2 different patterns.
+     a. Test patterns: 0x9999999 , 0x5555555.
+     b. Test range: (RAM_TESTSIZE x 4) Byte. The maximum value of RAM_TESTSIZE is 64MB.
+     b. Test routine: Write to every 32-bit data into DRAM and read the result to check if they are
+                      identical. If no, error counter will increment.
+
+-------------------------------------------------------------------------------------
+How to use:
+(1). use "make" to generate the "DRAM_TEST" exectable file
+
+(2). execute "DRAM_TEST" in command line to see the test result of error counter.
