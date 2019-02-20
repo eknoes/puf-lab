@@ -21,6 +21,7 @@ Performs Rowhammering Only
 #include <linux/io.h>
 #include <linux/workqueue.h>
 #include <linux/slab.h>
+#include <bcm_host.h>
 
 /************ Variable Declaration *********/
 static unsigned int puf_init_val = 0xaaaaaaaa;
@@ -781,6 +782,13 @@ int thread_init (void) {
     char our_thread[18]="rowhammer_threadx";
     printk(KERN_NOTICE "Module for PUF is loaded");   
     printk(KERN_ALERT "in init");
+
+    unsigned int sdram_addr = bcm_host_get_sdram_address();
+    
+    printk(KERN_NOTICE "SDRAM Address at 0x%x", sdram_addr);
+
+    read_OMAP_system_address(sdram_addr, 0x00000000); 
+
     /*thread1 = kthread_create(thread_fn,puf_delaysec,our_thread);
     if((thread1))
         {

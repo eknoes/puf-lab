@@ -3,11 +3,13 @@
 
     git clone https://github.com/raspberrypi/tools ~/Projekte/rbpi-tools
     git clone --depth=1 https://github.com/raspberrypi/linux ~/Projekte/rbpi-linux
+    git clone --depth=1 git@github.com:raspberrypi/firmware.git ~/Projekte/rbpi-firmware
 
 Afterwards, modify the Makefile to point to those directories.
 
     RBPITOOLS=${HOME}/Projekte/rbpi-tools
     RBPIKERNEL=${HOME}/Projekte/rbpi-linux
+    RBPIFIRMWARE=${HOME}/Projekte/rbpi-firmware
 
 To build the kernel module, you first have to build the kernel sources.
 Therefore, cd to RBPI-TOOLS.
