@@ -33,3 +33,6 @@ a way to disable it entirely (as far as I read), but there are some ways to
 disable part of it. We need to find out what the virtual address of these
 registers is and if using these functions is feasible
 * We coudl try to find a way to read the SRAM
+
+# Useful
+* Reading `/proc/iomem` to get physical memory addresse ranges [1](https://superuser.com/questions/480451/what-kind-of-memory-addresses-are-the-ones-shown-by-proc-ioports-and-proc-iomem)
