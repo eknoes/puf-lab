@@ -47,3 +47,11 @@ Just `make` it.
 
 ## Install kernel module
 Move the file `dram_puf.ko` to the raspberry and load it with `insmod dram_puf.ko`. You can check the output via `dmesg`.
+
+# Experimental Results
+
+## Address space
+* Physical 0x30000000 works
+* Physical 0xc0000000 does not work
+* Virtual 0xc0000000 does not work
+* Physical 0x00000000 works
