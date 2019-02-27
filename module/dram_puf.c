@@ -1,16 +1,3 @@
-
-/***
-The below code tests for 60 secs for running a loop continuously
-In the code, we can execute it for 60 secs
-
-
-Performs Rowhammering Only
-
-
-
-***/
-
-
 /***********Header Files************/
 #include <linux/module.h>
 #include <linux/kernel.h>
@@ -20,7 +7,7 @@ Performs Rowhammering Only
 #include <linux/uaccess.h>
 
 /************ Variable Declaration *********/
-#define RAM_TESTSIZE 64 // Test Range = (RAM_TESTSIZE x 4) Byte
+#define RAM_TESTSIZE 512 // Test Range = (RAM_TESTSIZE x 4) Byte
 #define PHYS_DRAM_ADDR 0xc0000000
 
 #define PROCFS_MAX_SIZE		RAM_TESTSIZE
@@ -28,7 +15,7 @@ Performs Rowhammering Only
 
 
 void read_ram(unsigned int * start, unsigned int offset);
-int ram_to_buf(unsigned int * start, unsigned int testsize, char * buffer);
+/* int ram_to_buf(unsigned int * start, unsigned int testsize, char * buffer);
 
 static struct proc_dir_entry *ent;
 
@@ -71,17 +58,19 @@ static struct file_operations myops =
 	.write = mywrite,
 };
 
-
+*/
 int thread_init (void) {   
-	ent = proc_create(PROCFS_NAME, 0660, NULL, &myops);
-/*  printk(KERN_NOTICE "Physical 0x30000000");   
-  read_ram(phys_to_virt(0x30000000), RAM_TESTSIZE);
+	//ent = proc_create(PROCFS_NAME, 0660, NULL, &myops);
     printk(KERN_NOTICE "Physical 0x00000000");   
     read_ram(phys_to_virt(0x00000000), RAM_TESTSIZE);
+    printk(KERN_NOTICE "Physical 0x00e00000");   
+    read_ram(phys_to_virt(0x00e00000), RAM_TESTSIZE);
     printk(KERN_NOTICE "Physical 0x10000000");   
     read_ram(phys_to_virt(0x10000000), RAM_TESTSIZE);
     printk(KERN_NOTICE "Physical 0x20000000");   
-    read_ram(phys_to_virt(0x20000000), RAM_TESTSIZE);*/
+    read_ram(phys_to_virt(0x20000000), RAM_TESTSIZE);
+    printk(KERN_NOTICE "Physical 0x30000000");   
+    read_ram(phys_to_virt(0x30000000), RAM_TESTSIZE);
     return 0;
 }
 
@@ -113,24 +102,21 @@ void read_ram(unsigned int * start, unsigned int testsize) {
     unsigned int *currentDRAMAddr;
     unsigned int *startAddr;
     unsigned int result;
-    unsigned int last_result;
 
         
     startAddr = start;
     for( offset = 0; offset < testsize; offset++ ) {         // Loop to read data from memory
            currentDRAMAddr = ( start + offset );
            result = *( currentDRAMAddr );                                          
-           if(last_result != result) {
-               last_result = result;
-               printk(KERN_NOTICE "Address: 0x%x to 0x%x : Value: 0x%x\n", (unsigned int) startAddr, (unsigned int) currentDRAMAddr, result );
+               printk(KERN_NOTICE "0x%xx : 0x%x\n", (unsigned int) currentDRAMAddr, result );
                startAddr = currentDRAMAddr;
-           } 
+         
     }
 }
 
 void thread_cleanup(void) {
   printk(KERN_ALERT "Module Removed\n");
-	proc_remove(ent); 
+//	proc_remove(ent); 
  return;
 }
 
