@@ -5,17 +5,22 @@
 #include <linux/proc_fs.h>
 #include <linux/io.h>
 #include <linux/uaccess.h>
+#include <linux/slab.h>
 
 /************ Variable Declaration *********/
-#define RAM_TESTSIZE 512 // Test Range = (RAM_TESTSIZE x 4) Byte
-#define PHYS_DRAM_ADDR 0xc0000000
+#define INPUT_SIZE 1024*1024
+
+#define INVERT_NEUMANN 0
 
 #define PROCFS_MAX_SIZE		RAM_TESTSIZE
-#define PROCFS_NAME 		"puf-memory-map"
+#define PROCFS_NAME 		"neumann_puf"
 
 
+char * create_neumann(char *startAddr, int inputLen, int *outputSize);
 void read_ram(unsigned int * start, unsigned int offset);
-/* int ram_to_buf(unsigned int * start, unsigned int testsize, char * buffer);
+
+char *puf;
+int pufSize;
 
 static struct proc_dir_entry *ent;
 
@@ -27,27 +32,19 @@ static ssize_t mywrite(struct file *file, const char __user *ubuf,size_t count, 
 
 static ssize_t myread(struct file *file, char __user *ubuf,size_t count, loff_t *ppos) 
 {
-	char buf[PROCFS_MAX_SIZE * 16];
-    int len = 0;
-    int i = 0;
     int total_len = 0;
+    printk( KERN_DEBUG " read from proc");
 
-    if(*ppos > 0 || count < PROCFS_MAX_SIZE)
+    if(*ppos > 0 || count < pufSize)
 		return 0;
     
-    //len = sprintf(buf, "Here comes the PUF Value");
+    if(copy_to_user(ubuf, puf, pufSize))
+        return -EFAULT;
 
-    for(i = 0; i < 100; i++) {        
-        len = ram_to_buf(phys_to_virt(0x00000000), RAM_TESTSIZE, buf);
-       
-        if(copy_to_user(ubuf + total_len,buf,len))
-            return -EFAULT;
-
-        total_len += len;
-        
-    }
+    total_len = pufSize;
 
     *ppos = total_len;
+
     return total_len;
 }
 
@@ -58,20 +55,75 @@ static struct file_operations myops =
 	.write = mywrite,
 };
 
-*/
+
 int thread_init (void) {   
-	//ent = proc_create(PROCFS_NAME, 0660, NULL, &myops);
-    printk(KERN_NOTICE "Physical 0x00000000");   
-    read_ram(phys_to_virt(0x00000000), RAM_TESTSIZE);
-    printk(KERN_NOTICE "Physical 0x00e00000");   
-    read_ram(phys_to_virt(0x00e00000), RAM_TESTSIZE);
-    printk(KERN_NOTICE "Physical 0x10000000");   
-    read_ram(phys_to_virt(0x10000000), RAM_TESTSIZE);
-    printk(KERN_NOTICE "Physical 0x20000000");   
-    read_ram(phys_to_virt(0x20000000), RAM_TESTSIZE);
-    printk(KERN_NOTICE "Physical 0x30000000");   
-    read_ram(phys_to_virt(0x30000000), RAM_TESTSIZE);
+    ent = proc_create(PROCFS_NAME, 0660, NULL, &myops);
+    
+    puf = create_neumann(phys_to_virt(0x10000000), INPUT_SIZE, &pufSize);
+    
+    printk(KERN_NOTICE "Generated PUF with size %i\n", pufSize);
+    
     return 0;
+}
+
+#define LEFT_MASK 0x80
+#define LEFT_PAIR 0xc0
+#define RIGHT_PAIR 0x30
+
+char * create_neumann(char *startAddr, int inputLen, int *outputSize) {
+
+    int i, bitpair, copied_bits, output_pos;
+    unsigned char curr_pair;
+    char *outputAddr;
+
+    *outputSize = INPUT_SIZE / 4;
+    outputAddr = kmalloc(*outputSize, GFP_KERNEL);
+
+    output_pos = 0;
+    copied_bits = 0;
+
+    for(i = 0; i < inputLen; i++) {
+
+        for( bitpair = 0; bitpair < 4; bitpair++) {
+            // Copy current byte, shift to current pair, mask
+            curr_pair = *(startAddr + i);
+            curr_pair = curr_pair << (bitpair * 2);
+            curr_pair = curr_pair & LEFT_PAIR;
+
+#ifdef INVERT_NEUMANN
+            // Copy if not 00 or 01
+            if ( (curr_pair == 0xc0 || curr_pair == 0x00 ) ) {
+#else
+            if ( !(curr_pair == 0xc0 || curr_pair == 0x00 ) ) {
+#endif
+                *(outputAddr + output_pos) = *(outputAddr + output_pos) | (curr_pair >> 7);
+
+                // If 8 bits copied, move on, otherwise shift
+                if(++copied_bits % 8 == 0) {
+                    output_pos++;
+        
+                    if(*outputSize < (output_pos)) {
+                        *outputSize = output_pos + 24;
+                        outputAddr = krealloc(outputAddr, *outputSize, GFP_KERNEL);
+
+                        if(outputAddr == NULL) {
+                            printk("Could not realloc space");
+                            return 0;
+                        }
+                    }
+
+                    *(outputAddr+output_pos) = 0x00;
+                } else {
+                    *(outputAddr + output_pos) = *(outputAddr + output_pos) << 1;
+                }
+            }
+        }
+    }
+    
+    outputAddr = krealloc(outputAddr, copied_bits / 8, GFP_KERNEL);
+    pufSize = copied_bits / 8;
+
+    return outputAddr;
 }
 
 int ram_to_buf(unsigned int * start, unsigned int testsize, char * buffer) {
@@ -115,9 +167,10 @@ void read_ram(unsigned int * start, unsigned int testsize) {
 }
 
 void thread_cleanup(void) {
-  printk(KERN_ALERT "Module Removed\n");
-//	proc_remove(ent); 
- return;
+    printk(KERN_ALERT "Module Removed\n");
+    proc_remove(ent); 
+    kfree(puf);
+    return;
 }
 
 MODULE_LICENSE("GPL");   
