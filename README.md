@@ -4,6 +4,8 @@ See the directory `kernel` for the current module implementation, information ab
 
 See the `test-results` directory for the different results during the different stages.
 
+See the `neumann` directory for the implementation of the Von Neumann algorithm during developement, the one found in the kernel module is nearly the same.
+
 # General Information during our task
 There are multiple ways a PUF on a Raspberry PI could be achieved:
 
