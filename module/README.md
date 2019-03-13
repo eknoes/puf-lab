@@ -14,6 +14,7 @@ When the flag `LOG_RAM` is set, the initial input is logged to kernel log.
 ## Von Neumann Transformation
 Is basically used to unbias input for pseudo-random number generation, it is described in 2.2 [here](https://link.springer.com/content/pdf/10.1007%2F978-3-642-21040-2_12.pdf).
 
+Before we implemented it in the kernel module, we wrote a basic version which can be found in the directory `neumann`.
 
 # How to compile
 *Modified version of https://www.raspberrypi.org/documentation/linux/kernel/building.md*
@@ -66,6 +67,7 @@ Just `make` it.
 Move the file `dram_puf.ko` to the raspberry and load it with `insmod dram_puf.ko`. You can check the output via `dmesg`.
 
 # Experimental Results
+Experimental results for Raspberry PI, which addresse can be read
 
 ## Address space
 * Physical 0x30000000 works
