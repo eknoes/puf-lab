@@ -46,7 +46,7 @@ int puf_init (void) {
     char *tmp_puf;
     int size;
 
-#ifdef LOG_RAM 
+#if LOG_RAM 
     printk(KERN_NOTICE "Log RAM content");
     log_ram_content(phys_to_virt(BASE_ADDR), INPUT_SIZE);
 #endif
