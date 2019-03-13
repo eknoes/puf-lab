@@ -2,7 +2,7 @@ PUF on the Raspberry Pi
 =======================
 See the directory `kernel` for the current module implementation, information about what works and what not is described in the README in that directory.
 
-
+See the `test-results` directory for the different results during the different stages.
 
 # General Information during our task
 There are multiple ways a PUF on a Raspberry PI could be achieved:
