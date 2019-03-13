@@ -46,9 +46,13 @@ make ARCH=arm CROSS_COMPILE=$RBPITOOLS/arm-bcm2708/gcc-linaro-arm-linux-gnueabih
 
 Now, you have a compiled kernel.
 
-## Install Kernel
+## Install Kernel on Raspberry Pi
 *This step can usually be skipped*
 *It is expected that /dev/mmcblk0 is the microSD card*
+
+For the cross-compiled module to work, the kernel installed on the Raspberry Pi
+must be the same. You can install the compiled kernel the following way if
+necessary:
 
 ```bash
 cd $RBPIKERNEL
@@ -85,15 +89,3 @@ into `/etc/modules` to load it at boot time. Afterwards, run `sudo depmod`.
 * **Logging of memory range:** When the flag `LOG_RAM` is set, the initial
   input is logged to kernel log
 * **Location of PUF:** `/proc/dram_puf`
-
-
-## Backup
-### Results
-This reduces the size from 1MB to around 14KB, but when testing with `rng-test`
-from [rng-tools](https://wiki.archlinux.org/index.php/Rng-tools) it succeeds as
-"random".
-
-We discovered small differences on different reads of the memory range by our
-kernel module.  They lead to high differences of the generated PUFs, as we do
-not yet apply any form of error correction. Since the differences in the
-original memory also resulted in coll This should be done on the initial input.
