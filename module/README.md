@@ -1,7 +1,20 @@
-# README
-The kernel module should provide a DRAM based PUF in `/proc/dram_puf`.
-This PUF is calculated by reading the memory range starting at `BASE_ADDR` to `BASE_ADDR + INPUT_SIZE`.
-As our experimental results showed a bias, we apply the Von Neumann Transformation twice, where the first iteration uses an inverted Von Neumann.
+# Kernel module dram_puf for the Raspberry Pi
+
+This kernel module should provide a PUF derivated from the DRAM of the
+Raspberry Pi in the location `/proc/dram_puf`.
+
+## Concept
+The PUF is calculated by reading a memory range starting at `BASE_ADDR` to
+`BASE_ADDR + INPUT_SIZE`.  As our experimental results showed a bias towards
+the sequence `01010101`, two correction algorithms are applied to the read
+memory.
+
+1. An inverted variation of the Von Neumann correction was applied. Here the
+   bit pairs `01` and `10` where discarded, `00` converted to `0` and `11` to
+   `1`.
+2. The second time the Von Neumann correction is applied in its original form.
+
+## Results
 This reduces the size from 1MB to around 14KB, but when testing with `rng-test` from [rng-tools](https://wiki.archlinux.org/index.php/Rng-tools) it succeeds as "random".
 
 We discovered small changes in the memory range read by our kernel module.
