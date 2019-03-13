@@ -78,7 +78,7 @@ Experimental results for Raspberry PI, which addresse can be read
 * Physical 0x00000000 works
 * Physical 0x00000000 -> 0x000000FF looks like SDRAM Register, as from 0x000000FF on it, contents are 0x55555555
 
-## # Ranges
+## Ranges
 * 0x00000000: Same (Device level, register + X)
 * 0x00e00000: Really different (Application Data?)
 * 0x10000000: Same (device level), Quite Similar (Both PIs)
