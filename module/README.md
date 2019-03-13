@@ -66,6 +66,8 @@ Just `make` it.
 ## Install kernel module
 Move the file `dram_puf.ko` to the raspberry and load it with `insmod dram_puf.ko`. You can check the output via `dmesg`.
 
+To make it persistent, copy the module to `/lib/modules/$(uname -r)/kernel/drivers/staging/dram_puf` and insert the name into `/etc/modules` to load it at boot time. Afterwards, run `sudo depmod`.
+
 # Experimental Results
 Experimental results for Raspberry PI, which addresse can be read
 
@@ -75,3 +77,10 @@ Experimental results for Raspberry PI, which addresse can be read
 * Virtual 0xc0000000 does not work
 * Physical 0x00000000 works
 * Physical 0x00000000 -> 0x000000FF looks like SDRAM Register, as from 0x000000FF on it, contents are 0x55555555
+
+## # Ranges
+* 0x00000000: Same (Device level, register + X)
+* 0x00e00000: Really different (Application Data?)
+* 0x10000000: Same (device level), Quite Similar (Both PIs)
+* 0x20000000: Same (device level), Similarr (Both PIs)
+* 0x30000000: Really different
