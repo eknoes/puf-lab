@@ -28,7 +28,7 @@ Now we read the content of the memory on different ranges and different devices 
 We implemented the Neumann algorithm. We inverted it and compared after several boot, where we took a short break and a long break between the boots.
 
 ## 03-final-inverted-normal-neumann-puf
-As after inverting it, we had a strong bias for `11b`, we apply the common Neumann algorithm afterwards.
+As after inverting it, we had a strong bias for `11`, we apply the common Neumann algorithm afterwards.
 
 ## File Tree
 ```
