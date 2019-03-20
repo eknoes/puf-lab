@@ -1,4 +1,5 @@
 # PUF on the Raspberry Pi
+*Privacy Enhancing Technologies Seminar WS18/19*
 In this repository the goal was pursued, to extract a PUF (Physical Uncloneable
 Function) froma Raspberry Pi and provide it in a form to be later used in a
 proof-of-concept SSO implementation.
@@ -41,3 +42,11 @@ PUF in further iterations.
 
 ## Useful
 * Reading `/proc/iomem` to get physical memory addresse ranges [1](https://superuser.com/questions/480451/what-kind-of-memory-addresses-are-the-ones-shown-by-proc-ioports-and-proc-iomem)
+
+## Contributors
+* Sönke Huster ([eknoes](github.com/eknoes))
+* Fabian Hinz ([naibaf0](github.com/naibaf0))
+* Martin Weber and Maximilian Fries from https://github.com/MokaMokiMoke/PrivTechSSO
+
+## Related Work
+PUF based SSO (Single Sign-On) (https://github.com/MokaMokiMoke/PrivTechSSO)
