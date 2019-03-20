@@ -1,5 +1,6 @@
 # PUF on the Raspberry Pi
 *Privacy Enhancing Technologies Seminar WS18/19*
+
 In this repository the goal was pursued, to extract a PUF (Physical Uncloneable
 Function) froma Raspberry Pi and provide it in a form to be later used in a
 proof-of-concept SSO implementation.
