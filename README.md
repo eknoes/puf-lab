@@ -3,7 +3,7 @@
 
 In this repository the goal was pursued, to extract a PUF (Physical Uncloneable
 Function) froma Raspberry Pi and provide it in a form to be later used in a
-proof-of-concept SSO implementation.
+proof-of-concept SSO implementation. It never worked, but made some discoveries.
 
 ## Repository Index
 * **[module](module):** The kernel module implementation providing a PUF.
